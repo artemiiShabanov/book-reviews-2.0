@@ -13,13 +13,11 @@ import model.Book;
 import model.Review;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Supporting functions for working with selenium web driver.
@@ -59,7 +57,7 @@ public class WebDriverUtil {
             titleField.sendKeys(title);
             WebElement authorField = driver.findElement(By.name("as_auth"));
             authorField.sendKeys(author);
-            new Select(driver.findElement(By.name("num"))).selectByIndex(3);
+            new Select(driver.findElement(By.name("num"))).selectByIndex(2);
 
             driver.findElement(By.name("btnG")).click();
 
@@ -152,14 +150,10 @@ public class WebDriverUtil {
                 return result;
             } catch (NoSuchElementException ex) {
                 try {
-                    wait.until((ExpectedCondition<Boolean>) wd ->
-                            ((JavascriptExecutor) wd).executeScript("return document.readyState").equals("complete"));
-                    Thread.sleep(500);
-                    driver.get(driver.findElement(By.cssSelector(".eOneTile_image_link.jsUpdateLink.jsPic")).getAttribute("href"));
+                    driver.findElement(By.cssSelector(".eOneTile_tileLink.jsUpdateLink"));
+                    driver.get(driver.findElements(By.cssSelector(".eOneTile_tileLink.jsUpdateLink")).get(1).getAttribute("href"));
                 } catch (NoSuchElementException r) {
                     //there are only 1 book for this request
-                    //NOP
-                } catch (InterruptedException e) {
                     //NOP
                 }
                 try {
@@ -169,7 +163,7 @@ public class WebDriverUtil {
 
                     List<WebElement> list = driver.findElements(By.cssSelector(".bComment.jsComment"));
                     for (WebElement we : list) {
-                        result.add(new Review(we.findElement(By.className("eComment_Text_Text")).getText(), we.findElement(By.className("eComment_Info_Username_Link")).getText(), "ozon.ru", DateUtil.parseOzon(we.findElement(By.className("eComment_Info_Date")).getText())));
+                        result.add(new Review(we.findElement(By.className("eComment_Text_Text")).getText(), we.findElement(By.className("eComment_Info_Username_Link")).getText(), "ozon.ru", DateUtil.parseOzon(we.findElement(By.className("eComment_Info_Date")).getText()), getMarkFromWEOzon(we)));
                     }
                 } catch (NoSuchElementException e) {
                     return result;
@@ -184,6 +178,17 @@ public class WebDriverUtil {
             driver = new ChromeDriver();
             throw new DriverWasClosedException();
         }
+    }
+
+    /**
+     * Supporting function to get mark on ozon.ru.
+     * @param we
+     * @return mark
+     */
+    private static int getMarkFromWEOzon(WebElement we) {
+        we = we.findElement(By.cssSelector(".bStars.inline"));
+        String c = we.getAttribute("class").split(" ")[2];
+        return (c.charAt(1) - '0')*2;
     }
 
     /**
@@ -287,9 +292,11 @@ public class WebDriverUtil {
                     List<WebElement> listAuthor = driver.findElements(By.cssSelector(".user-name a"));
                     List<WebElement> listText = driver.findElements(By.cssSelector(".comment-text.content-comments p"));
                     List<WebElement> listDate = driver.findElements(By.cssSelector(".comment-footer .date"));
+                    List<WebElement> listMark = driver.findElements(By.id("mark-stars"));
 
-                    for (int i = 0; i < listAuthor.size(); i++) {
-                        result.add(new Review(listText.get(i).getText(), listAuthor.get(i).getText(), "labirint.ru", DateUtil.parseLabirint(listDate.get(i).getText())));
+
+                    for (int i = 0; i < listMark.size(); i++) {
+                        result.add(new Review(listText.get(i).getText(), listAuthor.get(i).getText(), "labirint.ru", DateUtil.parseLabirint(listDate.get(i).getText()), getMarkFromWELabirint(listMark.get(i))));
                     }
 
                 } catch (NoSuchElementException e) {
@@ -305,6 +312,22 @@ public class WebDriverUtil {
             throw new DriverWasClosedException();
         }
     }
+
+    /**
+     * Supporting function to get mark on labirint.ru.
+     * @param we
+     * @return mark
+     */
+    private static int getMarkFromWELabirint(WebElement we) {
+        int result = 0;
+        for( WebElement el: we.findElements(By.cssSelector(".star"))) {
+            if (el.getAttribute("class").split(" ")[1].equals("full")) {
+                result++;
+            }
+        }
+        return result;
+    }
+
 
     //Other stuff
 

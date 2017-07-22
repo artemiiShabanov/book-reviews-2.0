@@ -2,6 +2,8 @@ import Exceptions.DriverWasClosedException;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import Exceptions.BookNotSelectedException;
 import Exceptions.BooksNotFoundException;
@@ -32,6 +34,8 @@ public class OverviewController {
     private Label chosenAuthorLabel;
     @FXML
     private TextArea chosenText;
+    @FXML
+    private HBox stars;
 
     //Search items.
     @FXML
@@ -106,12 +110,26 @@ public class OverviewController {
             chosenText.setVisible(true);
             chosenText.setText(review.getText());
             chosenDateLabel.setText(DateUtil.format(review.getDate()));
+            stars.getChildren().clear();
+            for (int i = 0; i < review.getMark(); i++) {
+                ImageView img = new ImageView("images/star.png");
+                img.setFitHeight(20);
+                img.setFitWidth(20);
+                stars.getChildren().add(img);
+            }
+            for (int i = review.getMark(); i < 10; i++) {
+                ImageView img = new ImageView("images/empty-star.png");
+                img.setFitHeight(20);
+                img.setFitWidth(20);
+                stars.getChildren().add(img);
+            }
         } else {
             // Cleaning.
             chosenDateLabel.setText("");
             chosenSourceLabel.setText("");
             chosenAuthorLabel.setText("");
             chosenText.setVisible(false);
+            stars.getChildren().clear();
         }
     }
 

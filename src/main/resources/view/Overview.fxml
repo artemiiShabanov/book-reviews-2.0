@@ -48,12 +48,12 @@
                   <Insets left="40.0" top="-4.0" />
                </HBox.margin>
             </Button>
-            <Label fx:id="bookName" alignment="CENTER" maxWidth="290.0" prefHeight="40.0" prefWidth="290.0" textFill="#000dfc" textOverrun="CLIP">
+            <Label fx:id="bookName" alignment="CENTER" maxWidth="290.0" prefHeight="40.0" prefWidth="290.0" textFill="#1b1c00" textOverrun="CLIP">
                <HBox.margin>
                   <Insets left="20.0" />
                </HBox.margin>
                <font>
-                  <Font name="Book Antiqua Bold" size="14.0" />
+                  <Font name="Book Antiqua Bold" size="18.0" />
                </font>
             </Label>
          </children>
@@ -70,6 +70,7 @@
                   <Insets bottom="5.0" left="15.0" />
                </VBox.margin>
             </Label>
+            <HBox fx:id="stars" prefHeight="35.0" prefWidth="200.0" />
             <TextArea fx:id="chosenText" cache="true" editable="false" prefHeight="350.0" prefWidth="200.0" scrollLeft="1.0" wrapText="true" />
             <BorderPane prefHeight="30.0" prefWidth="150.0">
                <left>

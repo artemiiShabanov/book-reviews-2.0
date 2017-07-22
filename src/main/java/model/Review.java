@@ -1,9 +1,6 @@
 package model;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 
 import java.time.LocalDate;
 
@@ -16,12 +13,14 @@ public class Review {
     private final StringProperty author;
     private final StringProperty resource;
     private final ObjectProperty<LocalDate> date;
+    private final IntegerProperty mark;
 
     /**
      * Default constructor.
+     * @param mark
      */
-    public Review() {
-        this(null, null, null, null);
+    public Review(IntegerProperty mark) {
+        this(null, null, null, null, 0);
     }
 
     /**
@@ -30,12 +29,14 @@ public class Review {
      * @param author Author
      * @param resource Resource
      * @param date Date of the review
+     * @param mark
      */
-    public Review(String text, String author, String resource, LocalDate date) {
+    public Review(String text, String author, String resource, LocalDate date, int mark) {
         this.text = new SimpleStringProperty(text);
         this.author = new SimpleStringProperty(author);
         this.resource = new SimpleStringProperty(resource);
         this.date = new SimpleObjectProperty<>(date);
+        this.mark = new SimpleIntegerProperty(mark);
     }
 
     @Override
@@ -94,5 +95,18 @@ public class Review {
 
     public ObjectProperty<LocalDate> dateProperty() {
         return date;
+    }
+
+
+    public int getMark() {
+        return mark.get();
+    }
+
+    public IntegerProperty markProperty() {
+        return mark;
+    }
+
+    public void setMark(int mark) {
+        this.mark.set(mark);
     }
 }
