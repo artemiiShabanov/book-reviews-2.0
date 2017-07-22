@@ -23,6 +23,7 @@ public class MainApp extends Application {
 
     private BorderPane rootLayout;
     private Stage primaryStage;
+    public Stage getPrimaryStage() { return primaryStage; }
     /**
      * Book reviews - list(observable).
      */
@@ -111,6 +112,9 @@ public class MainApp extends Application {
             primaryStage.show();
             primaryStage.setResizable(false);
 
+            // Giving the controller access to the main application.
+            RootLayoutController controller = loader.getController();
+            controller.setMainApp(this);
         } catch (IOException e) {
             e.printStackTrace();
         }

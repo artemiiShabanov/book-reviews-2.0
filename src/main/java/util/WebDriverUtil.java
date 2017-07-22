@@ -94,6 +94,7 @@ public class WebDriverUtil {
 
         }
         catch(WebDriverException e) {
+            finish();
             driver = new ChromeDriver();
             throw new DriverWasClosedException();
         }
@@ -153,9 +154,12 @@ public class WebDriverUtil {
                 try {
                     wait.until((ExpectedCondition<Boolean>) wd ->
                             ((JavascriptExecutor) wd).executeScript("return document.readyState").equals("complete"));
+                    Thread.sleep(500);
                     driver.get(driver.findElement(By.cssSelector(".eOneTile_image_link.jsUpdateLink.jsPic")).getAttribute("href"));
                 } catch (NoSuchElementException r) {
                     //there are only 1 book for this request
+                    //NOP
+                } catch (InterruptedException e) {
                     //NOP
                 }
                 try {
@@ -176,6 +180,7 @@ public class WebDriverUtil {
 
         }
         catch(WebDriverException e) {
+            finish();
             driver = new ChromeDriver();
             throw new DriverWasClosedException();
         }
@@ -219,6 +224,7 @@ public class WebDriverUtil {
 
         }
         catch(WebDriverException e) {
+            finish();
             driver = new ChromeDriver();
             throw new DriverWasClosedException();
         }
@@ -294,6 +300,7 @@ public class WebDriverUtil {
 
         }
         catch(WebDriverException e) {
+            finish();
             driver = new ChromeDriver();
             throw new DriverWasClosedException();
         }
