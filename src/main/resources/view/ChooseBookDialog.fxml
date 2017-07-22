@@ -10,7 +10,7 @@
    <bottom>
       <BorderPane prefHeight="50.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <left>
-            <Button fx:id="selectBtn" mnemonicParsing="false" onAction="#handleSelect" prefWidth="100.0" text="Select" BorderPane.alignment="CENTER">
+            <Button fx:id="selectBtn" defaultButton="true" mnemonicParsing="false" onAction="#handleSelect" prefWidth="100.0" text="Select" BorderPane.alignment="CENTER">
                <BorderPane.margin>
                   <Insets left="100.0" />
                </BorderPane.margin></Button>

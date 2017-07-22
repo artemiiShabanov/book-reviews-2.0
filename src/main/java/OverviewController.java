@@ -121,7 +121,7 @@ public class OverviewController {
     @FXML
     private void handleSearch() {
         try{
-            bookName.setText(mainApp.Search(nameField.getText(), authorField.getText()));
+            bookName.setText(mainApp.search(nameField.getText(), authorField.getText()));
         }
         catch (ReviewsNotFoundException e){
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -146,7 +146,7 @@ public class OverviewController {
         } catch (DriverWasClosedException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Ooops");
-            alert.setHeaderText("Some problems with a web.");
+            alert.setHeaderText("Some problems with a web. Try again.");
             Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
             stage.getIcons().add(new Image("images/alert.png"));
 

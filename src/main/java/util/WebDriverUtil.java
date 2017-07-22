@@ -1,17 +1,25 @@
 package util;
 
 import Exceptions.DriverWasClosedException;
+import com.google.common.base.Charsets;
+import com.google.common.io.Resources;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import Exceptions.BooksNotFoundException;
 import model.Book;
 import model.Review;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Supporting functions for working with selenium web driver.
@@ -20,9 +28,14 @@ public class WebDriverUtil {
 
     private static WebDriver driver;
     static{
-        File file = new File("C:/Selenium/chromedriver.exe");
-        System.setProperty("webdriver.chrome.driver", file.getAbsolutePath());
-        driver = new ChromeDriver();
+        URL url = Resources.getResource("ChromeWDHome");
+        try {
+            String chromeHome = Resources.toString(url, Charsets.UTF_8);
+            System.setProperty("webdriver.chrome.driver", chromeHome);
+            driver = new ChromeDriver();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     //Google
@@ -46,7 +59,7 @@ public class WebDriverUtil {
             titleField.sendKeys(title);
             WebElement authorField = driver.findElement(By.name("as_auth"));
             authorField.sendKeys(author);
-            new Select(driver.findElement(By.name("num"))).selectByIndex(4);
+            new Select(driver.findElement(By.name("num"))).selectByIndex(3);
 
             driver.findElement(By.name("btnG")).click();
 
@@ -130,28 +143,24 @@ public class WebDriverUtil {
             WebElement searchField = driver.findElement(By.name("SearchText"));
             searchField.sendKeys(book.getTitle() + " " + book.getAuthor());
             driver.findElement(By.className("eMainSearchBlock_ButtonWrap")).click();
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                //NOP
-            }
+
+            WebDriverWait wait = new WebDriverWait(driver, 10);
 
             try {
                 driver.findElement(By.className("eZeroSearch_Top"));
                 return result;
             } catch (NoSuchElementException ex) {
                 try {
-                    Thread.sleep(500);
+                    wait.until((ExpectedCondition<Boolean>) wd ->
+                            ((JavascriptExecutor) wd).executeScript("return document.readyState").equals("complete"));
                     driver.get(driver.findElement(By.cssSelector(".eOneTile_image_link.jsUpdateLink.jsPic")).getAttribute("href"));
                 } catch (NoSuchElementException r) {
-                    //NOP
-                } catch (InterruptedException e) {
+                    //there are only 1 book for this request
                     //NOP
                 }
                 try {
-                    JavascriptExecutor js = ((JavascriptExecutor) driver);
-                    js.executeScript("window.scrollTo(0,document.body.scrollHeight);");
-                    Thread.sleep(500);
+                    ((JavascriptExecutor) driver).executeScript("window.scrollTo(0,document.body.scrollHeight);");
+                    wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("a.eCommentsHeader_Title_Link")));
                     driver.get(driver.findElement(By.cssSelector("a.eCommentsHeader_Title_Link")).getAttribute("href"));
 
                     List<WebElement> list = driver.findElements(By.cssSelector(".bComment.jsComment"));
@@ -160,8 +169,6 @@ public class WebDriverUtil {
                     }
                 } catch (NoSuchElementException e) {
                     return result;
-                } catch (InterruptedException e) {
-                    //NOP
                 }
 
             }
@@ -196,12 +203,11 @@ public class WebDriverUtil {
                 driver.findElement(By.className("eZeroSearch_Top"));
                 throw new BooksNotFoundException("There are no such books.");
             } catch (NoSuchElementException e) {
-                scrollDown(driver);
+                ((JavascriptExecutor) driver).executeScript("window.scrollTo(0,document.body.scrollHeight);");
                 List<WebElement> list = driver.findElements(By.cssSelector(".bOneTile.inline.jsUpdateLink"));
                 Book b = null;
                 for (WebElement we : list) {
                     b = createBookFromWEOzon(we);
-
                     if (b != null) {
                         result.add(b);
                     }
@@ -210,38 +216,6 @@ public class WebDriverUtil {
 
             result.remove(new Book("", ""));
             return result;
-
-        }
-        catch(WebDriverException e) {
-            driver = new ChromeDriver();
-            throw new DriverWasClosedException();
-        }
-    }
-
-    /**
-     * Supporting function to scroll down ang get all the books on ozon.ru.
-     */
-    private static void scrollDown(WebDriver driver) throws DriverWasClosedException {
-        try {
-
-            try {
-                List<WebElement> list;
-                JavascriptExecutor js = ((JavascriptExecutor) driver);
-                for (int i = 0; i < 3; i++) {
-                    js.executeScript("window.scrollTo(0,document.body.scrollHeight);");
-                    Thread.sleep(150);
-                }
-
-                int total = Integer.parseInt(driver.findElement(By.className("eTileSeparator_Total")).getText());
-                list = driver.findElements(By.cssSelector("div span.eTileSeparator_Text:last-child"));
-                while (Integer.parseInt(list.get(list.size() - 1).getText().split(" ")[1]) != total) {
-                    list = driver.findElements(By.cssSelector("div span.eTileSeparator_Text:last-child"));
-                    js.executeScript("window.scrollTo(0,document.body.scrollHeight);");
-                    Thread.sleep(150);
-                }
-            } catch (Exception e) {
-                //NOP
-            }
 
         }
         catch(WebDriverException e) {

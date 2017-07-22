@@ -99,7 +99,7 @@ public class MainApp extends Application {
     /**
      * Initializes the root layout.
      */
-    public void initRootLayout() {
+    private void initRootLayout() {
         try {
             // Loading from fxml.
             FXMLLoader loader = new FXMLLoader();
@@ -110,6 +110,7 @@ public class MainApp extends Application {
             primaryStage.setScene(new Scene(rootLayout));
             primaryStage.show();
             primaryStage.setResizable(false);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -118,7 +119,7 @@ public class MainApp extends Application {
     /**
      * Shows information about the reviews in the root layout.
      */
-    public void showOverview() {
+    private void showOverview() {
         try {
             // Loading from fxml.
             FXMLLoader loader = new FXMLLoader();
@@ -136,18 +137,19 @@ public class MainApp extends Application {
     }
 
     /**
-     *  Main search method.
+     * Main search method.
      * @param title
      * @param author
      * @return book title.
      * @throws ReviewsNotFoundException if there are no such books in the Internet.
      * @throws BookNotSelectedException if user did not select any book.
      */
-    public String Search(String title, String author) throws ReviewsNotFoundException, BookNotSelectedException, BooksNotFoundException, DriverWasClosedException {
+    public String search(String title, String author) throws ReviewsNotFoundException, BookNotSelectedException, BooksNotFoundException, DriverWasClosedException {
 
         HashSet<Book> bookSet;
         Book selectedBook;
         ArrayList<Review> newReviews;
+
 
         bookSet = WebDriverUtil.findBooksGoogle(title, author);
 
