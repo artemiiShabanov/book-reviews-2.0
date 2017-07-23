@@ -41,7 +41,7 @@ public class Review {
 
     @Override
     public String toString() {
-        return author.getValue() + "\r\n" + text.getValue() + "\r\n" + date.toString() + "\t" + resource.getValue() + "\r\n";
+        return author.getValue() + "\r\nоценка:" + mark.getValue().toString() + "\r\n" + text.getValue() + "\r\n" + date.toString() + "\t" + resource.getValue() + "\r\n";
     }
 
     //Getters and setters.

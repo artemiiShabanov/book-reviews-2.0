@@ -1,19 +1,29 @@
 import Exceptions.DriverWasClosedException;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import Exceptions.BookNotSelectedException;
 import Exceptions.BooksNotFoundException;
 import Exceptions.ReviewsNotFoundException;
+import model.Book;
 import model.Review;
-import util.DateUtil;
+import services.DateService;
+import services.WebDriverService;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 public class OverviewController {
+
+    @FXML
+    private BorderPane bp;
 
     //Table items.
     @FXML
@@ -109,7 +119,7 @@ public class OverviewController {
             chosenSourceLabel.setText(review.getResource());
             chosenText.setVisible(true);
             chosenText.setText(review.getText());
-            chosenDateLabel.setText(DateUtil.format(review.getDate()));
+            chosenDateLabel.setText(DateService.format(review.getDate()));
             stars.getChildren().clear();
             for (int i = 0; i < review.getMark(); i++) {
                 ImageView img = new ImageView("images/star.png");
@@ -139,7 +149,7 @@ public class OverviewController {
     @FXML
     private void handleSearch() {
         try{
-            bookName.setText(mainApp.search(nameField.getText(), authorField.getText()));
+            bookName.setText(search(nameField.getText(), authorField.getText()));
         }
         catch (ReviewsNotFoundException e){
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -171,6 +181,53 @@ public class OverviewController {
             alert.showAndWait();
         }
 
+    }
+
+    /**
+     * Main search method.
+     * @param title
+     * @param author
+     * @return book title.
+     * @throws ReviewsNotFoundException if there are no such books in the Internet.
+     * @throws BookNotSelectedException if user did not select any book.
+     */
+    private String search(String title, String author) throws ReviewsNotFoundException, BookNotSelectedException, BooksNotFoundException, DriverWasClosedException {
+
+        HashSet<Book> bookSet;
+        Book selectedBook;
+        ArrayList<Review> newReviews;
+        List<Review> reviewData = mainApp.getReviewData();
+
+        bookSet = WebDriverService.findBooksGoogle(title, author);
+
+        switch(bookSet.size())
+        {
+            case 0:
+                throw new BooksNotFoundException("Set is empty");
+            case 1:
+                selectedBook = bookSet.iterator().next();
+                reviewData.clear();
+                newReviews = WebDriverService.loadReviewsOzon(selectedBook);
+                newReviews.addAll(WebDriverService.loadReviewsLabirint(selectedBook));
+                if (newReviews.size() == 0) {
+                    throw new ReviewsNotFoundException();
+                }
+                reviewData.addAll(newReviews);
+                break;
+            default:
+                selectedBook = mainApp.showChooseBookDialog(FXCollections.observableArrayList(bookSet));
+                if (selectedBook == null) throw new BookNotSelectedException("Book was not selected.");
+                reviewData.clear();
+                newReviews = WebDriverService.loadReviewsOzon(selectedBook);
+                newReviews.addAll(WebDriverService.loadReviewsLabirint(selectedBook));
+                if (newReviews.size() == 0) {
+                    throw new ReviewsNotFoundException();
+                }
+                reviewData.addAll(newReviews);
+                break;
+        }
+
+        return selectedBook.getTitle();
     }
 
 

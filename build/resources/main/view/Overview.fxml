@@ -12,14 +12,14 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="515.0" prefWidth="910.0" styleClass="background" stylesheets="@Theme.css" xmlns="http://javafx.com/javafx/8.0.91" xmlns:fx="http://javafx.com/fxml/1" fx:controller="OverviewController">
+<BorderPane fx:id="bp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="525.0" prefWidth="1020.0" styleClass="background" stylesheets="@Theme.css" xmlns="http://javafx.com/javafx/8.0.91" xmlns:fx="http://javafx.com/fxml/1" fx:controller="OverviewController">
 
    <center>
       <TableView fx:id="reviewTable" prefHeight="100.0" prefWidth="200.0" stylesheets="@Theme.css" BorderPane.alignment="CENTER">
         <columns>
-            <TableColumn fx:id="textColumn" editable="false" prefWidth="369.0" text="Review" />
-            <TableColumn fx:id="dateColumn" prefWidth="111.0" text="Date" />
-            <TableColumn fx:id="resourceColumn" prefWidth="124.0" text="Resource" />
+            <TableColumn fx:id="textColumn" editable="false" prefWidth="383.0" text="Review" />
+            <TableColumn fx:id="dateColumn" prefWidth="136.0" text="Date" />
+            <TableColumn fx:id="resourceColumn" prefWidth="145.0" text="Resource" />
         </columns>
          <BorderPane.margin>
             <Insets bottom="20.0" left="15.0" />
@@ -30,30 +30,36 @@
       </TableView>
    </center>
    <top>
-      <HBox prefHeight="65.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <HBox prefHeight="65.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
          <children>
             <Label text="Title">
                <HBox.margin>
                   <Insets left="15.0" right="10.0" />
                </HBox.margin>
             </Label>
-            <TextField fx:id="nameField" />
+            <TextField fx:id="nameField" prefWidth="150.0">
+               <HBox.margin>
+                  <Insets left="20.0" />
+               </HBox.margin></TextField>
             <Label text="Author">
                <HBox.margin>
                   <Insets left="30.0" right="10.0" />
                </HBox.margin></Label>
-            <TextField fx:id="authorField" />
-            <Button fx:id="btnFind" defaultButton="true" disable="true" mnemonicParsing="false" onAction="#handleSearch" prefHeight="30.0" prefWidth="100.0" text="Find">
-               <HBox.margin>
-                  <Insets left="40.0" top="-4.0" />
-               </HBox.margin>
-            </Button>
-            <Label fx:id="bookName" alignment="CENTER" maxWidth="290.0" prefHeight="40.0" prefWidth="290.0" textFill="#000dfc" textOverrun="CLIP">
+            <TextField fx:id="authorField" prefWidth="150.0">
                <HBox.margin>
                   <Insets left="20.0" />
+               </HBox.margin></TextField>
+            <Button fx:id="btnFind" defaultButton="true" disable="true" mnemonicParsing="false" onAction="#handleSearch" prefHeight="30.0" prefWidth="100.0" text="Find">
+               <HBox.margin>
+                  <Insets left="40.0" />
+               </HBox.margin>
+            </Button>
+            <Label fx:id="bookName" alignment="CENTER" maxWidth="290.0" prefHeight="40.0" prefWidth="290.0" textFill="#1b1c00" textOverrun="CLIP">
+               <HBox.margin>
+                  <Insets left="20.0" top="-10.0" />
                </HBox.margin>
                <font>
-                  <Font name="Book Antiqua Bold" size="14.0" />
+                  <Font name="Book Antiqua Bold" size="18.0" />
                </font>
             </Label>
          </children>
@@ -63,7 +69,7 @@
       </HBox>
    </top>
    <right>
-      <VBox prefHeight="200.0" prefWidth="290.0" BorderPane.alignment="CENTER">
+      <VBox prefHeight="200.0" prefWidth="320.0" BorderPane.alignment="CENTER">
          <children>
             <Label fx:id="chosenAuthorLabel" text="Author">
                <VBox.margin>

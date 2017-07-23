@@ -67,6 +67,5 @@ public class RootLayoutController {
             System.out.println(ex.getMessage());
         }
     }
-// TODO: new features
 
 }

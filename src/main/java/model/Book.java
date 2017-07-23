@@ -2,7 +2,7 @@ package model;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import util.StringUtil;
+import services.StringService;
 
 
 /**
@@ -26,11 +26,11 @@ public class Book{
     @Override
     public boolean equals(Object obj) {
         Book that = (Book)obj;
-        return StringUtil.equalStrings(this.getTitle(), that.getTitle()) && StringUtil.equalAuthors(this.getAuthor(), that.getAuthor());
+        return StringService.equalStrings(this.getTitle(), that.getTitle()) && StringService.equalAuthors(this.getAuthor(), that.getAuthor());
     }
     @Override
     public int hashCode() {
-        return StringUtil.smartHash(title.get()) + 1 * StringUtil.stupidHash(author.get());
+        return StringService.smartHash(title.get()) + 1 * StringService.stupidHash(author.get());
     }
 
     //Getters and setters.

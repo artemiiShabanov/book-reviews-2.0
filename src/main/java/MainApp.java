@@ -13,7 +13,7 @@ import Exceptions.BooksNotFoundException;
 import Exceptions.ReviewsNotFoundException;
 import model.Book;
 import model.Review;
-import util.WebDriverUtil;
+import services.WebDriverService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,7 +56,7 @@ public class MainApp extends Application {
 
     @Override
     public void stop() throws Exception {
-        WebDriverUtil.finish();
+        WebDriverService.finish();
     }
 
     public static void main(String[] args) {
@@ -140,52 +140,7 @@ public class MainApp extends Application {
         }
     }
 
-    /**
-     * Main search method.
-     * @param title
-     * @param author
-     * @return book title.
-     * @throws ReviewsNotFoundException if there are no such books in the Internet.
-     * @throws BookNotSelectedException if user did not select any book.
-     */
-    public String search(String title, String author) throws ReviewsNotFoundException, BookNotSelectedException, BooksNotFoundException, DriverWasClosedException {
 
-        HashSet<Book> bookSet;
-        Book selectedBook;
-        ArrayList<Review> newReviews;
-
-
-        bookSet = WebDriverUtil.findBooksGoogle(title, author);
-
-        switch(bookSet.size())
-        {
-            case 0:
-                throw new BooksNotFoundException("Set is empty");
-            case 1:
-                selectedBook = bookSet.iterator().next();
-                reviewData.clear();
-                newReviews = WebDriverUtil.loadReviewsOzon(selectedBook);
-                newReviews.addAll(WebDriverUtil.loadReviewsLabirint(selectedBook));
-                if (newReviews.size() == 0) {
-                    throw new ReviewsNotFoundException();
-                }
-                reviewData.addAll(newReviews);
-                break;
-            default:
-                selectedBook = showChooseBookDialog(FXCollections.observableArrayList(bookSet));
-                if (selectedBook == null) throw new BookNotSelectedException("Book was not selected.");
-                reviewData.clear();
-                newReviews = WebDriverUtil.loadReviewsOzon(selectedBook);
-                newReviews.addAll(WebDriverUtil.loadReviewsLabirint(selectedBook));
-                if (newReviews.size() == 0) {
-                    throw new ReviewsNotFoundException();
-                }
-                reviewData.addAll(newReviews);
-                break;
-        }
-
-        return selectedBook.getTitle();
-    }
 }
 
 
