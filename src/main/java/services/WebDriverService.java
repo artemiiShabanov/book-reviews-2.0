@@ -286,12 +286,15 @@ public class WebDriverService {
                 return result;
             } catch (NoSuchElementException ex) {
                 try {
+                    driver.findElement(By.cssSelector(".text.navisort-find-text.navisort-find-suggests.ui-autocomplete-input"));
                     driver.get(driver.findElement(By.className("cover")).getAttribute("href"));
                 } catch (NoSuchElementException r) {
+                    //there are only 1 book
                     //NOP
                 }
                 try {
                     driver.get(driver.findElement(By.cssSelector("#product-comments-title a")).getAttribute("href"));
+
 
                     List<WebElement> listAuthor = driver.findElements(By.cssSelector(".user-name a"));
                     List<WebElement> listText = driver.findElements(By.cssSelector(".comment-text.content-comments p"));
@@ -339,7 +342,6 @@ public class WebDriverService {
      * Closing driver. Running by MainApp.
      */
     public static void finish() {
-        driver.close();
         driver.quit();
     }
 }
